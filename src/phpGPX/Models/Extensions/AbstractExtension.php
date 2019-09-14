@@ -11,26 +11,26 @@ use phpGPX\Models\Summarizable;
 abstract class AbstractExtension implements Summarizable
 {
 
-	/**
-	 * XML namespace of extension
-	 * @var string
-	 */
-	public $namespace;
+    /**
+     * XML namespace of extension
+     * @var string
+     */
+    public $namespace;
 
-	/**
-	 * Node name extension.
-	 * @var string
-	 */
-	public $extensionName;
+    /**
+     * Node name extension.
+     * @var string
+     */
+    public $extensionName;
 
-	/**
-	 * AbstractExtension constructor.
-	 * @param string $namespace
-	 * @param string $extensionName
-	 */
-	public function __construct($namespace, $extensionName)
-	{
-		$this->namespace = $namespace;
-		$this->extensionName = $extensionName;
-	}
+    /**
+     * AbstractExtension constructor.
+     * @param string $namespace
+     * @param string $extensionName
+     */
+    public function __construct($namespace, $extensionName)
+    {
+        $this->namespace = $namespace;
+        $this->extensionName = $extensionName;
+    }
 }

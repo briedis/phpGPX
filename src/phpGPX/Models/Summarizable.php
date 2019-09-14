@@ -13,9 +13,9 @@ namespace phpGPX\Models;
 interface Summarizable
 {
 
-	/**
-	 * Serialize object to array
-	 * @return array
-	 */
-	public function toArray();
+    /**
+     * Serialize object to array
+     * @return array
+     */
+    public function toArray();
 }

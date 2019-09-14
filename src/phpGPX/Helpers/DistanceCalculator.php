@@ -8,55 +8,52 @@
 
 namespace phpGPX\Helpers;
 
-use phpGPX\Helpers\GeoHelper;
 use phpGPX\Models\Point;
 use phpGPX\phpGPX;
 
 class DistanceCalculator
 {
-	/**
-	 * @param Point[]|array $points
-	 * @return float
-	 */
-	public static function calculate(array $points)
-	{
-		$distance = 0;
+    /**
+     * @param Point[]|array $points
+     * @return float
+     */
+    public static function calculate(array $points)
+    {
+        $distance = 0;
 
-		$pointCount = count($points);
+        $pointCount = count($points);
 
-		$lastConsideredPoint = null;
+        $lastConsideredPoint = null;
 
-		for ($p = 0; $p < $pointCount; $p++) {
-			$curPoint = $points[$p];
+        for ($p = 0; $p < $pointCount; $p++) {
+            $curPoint = $points[$p];
 
-			// skip the first point
-			if ($p === 0) {
-				$lastConsideredPoint = $curPoint;
-				continue;
-			}
+            // skip the first point
+            if ($p === 0) {
+                $lastConsideredPoint = $curPoint;
+                continue;
+            }
 
-			// calculate the delta from current point to last considered point
-			$curPoint->difference = GeoHelper::getDistance($lastConsideredPoint, $curPoint);
+            // calculate the delta from current point to last considered point
+            $curPoint->difference = GeoHelper::getDistance($lastConsideredPoint, $curPoint);
 
-			// if smoothing is applied we only consider points with a delta above the threshold (e.g. 2 meters)
-			if (phpGPX::$APPLY_DISTANCE_SMOOTHING) {
-				$differenceFromLastConsideredPoint = GeoHelper::getDistance($curPoint, $lastConsideredPoint);
+            // if smoothing is applied we only consider points with a delta above the threshold (e.g. 2 meters)
+            if (phpGPX::$APPLY_DISTANCE_SMOOTHING) {
+                $differenceFromLastConsideredPoint = GeoHelper::getDistance($curPoint, $lastConsideredPoint);
 
-				if ($differenceFromLastConsideredPoint > phpGPX::$DISTANCE_SMOOTHING_THRESHOLD) {
-					$distance += $differenceFromLastConsideredPoint;
-					$lastConsideredPoint = $curPoint;
-				}
-			}
+                if ($differenceFromLastConsideredPoint > phpGPX::$DISTANCE_SMOOTHING_THRESHOLD) {
+                    $distance += $differenceFromLastConsideredPoint;
+                    $lastConsideredPoint = $curPoint;
+                }
+            } else {
+                // if smoothing is not applied we consider every point
+                $distance += $curPoint->difference;
+                $lastConsideredPoint = $curPoint;
+            }
 
-			// if smoothing is not applied we consider every point
-			else {
-				$distance += $curPoint->difference;
-				$lastConsideredPoint = $curPoint;
-			}
+            $curPoint->distance = $distance;
+        }
 
-			$curPoint->distance = $distance;
-		}
-
-		return $distance;
-	}
+        return $distance;
+    }
 }

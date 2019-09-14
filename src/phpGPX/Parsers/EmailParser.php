@@ -6,7 +6,10 @@
 
 namespace phpGPX\Parsers;
 
+use DOMDocument;
+use DOMElement;
 use phpGPX\Models\Email;
+use SimpleXMLElement;
 
 /**
  * Class EmailParser
@@ -14,40 +17,40 @@ use phpGPX\Models\Email;
  */
 abstract class EmailParser
 {
-	private static $tagName = 'email';
+    private static $tagName = 'email';
 
-	/**
-	 * @param \SimpleXMLElement $node
-	 * @return Email
-	 */
-	public static function parse(\SimpleXMLElement $node)
-	{
-		$email = new Email();
+    /**
+     * @param SimpleXMLElement $node
+     * @return Email
+     */
+    public static function parse(SimpleXMLElement $node)
+    {
+        $email = new Email();
 
-		$email->id = isset($node['id']) ? (string) $node['id'] : null;
-		$email->domain = isset($node['domain']) ? (string) $node['domain'] : null;
+        $email->id = isset($node['id']) ? (string)$node['id'] : null;
+        $email->domain = isset($node['domain']) ? (string)$node['domain'] : null;
 
-		return $email;
-	}
+        return $email;
+    }
 
 
-	/**
-	 * @param Email $email
-	 * @param \DOMDocument $document
-	 * @return \DOMElement
-	 */
-	public static function toXML(Email $email, \DOMDocument &$document)
-	{
-		$node =  $document->createElement(self::$tagName);
+    /**
+     * @param Email $email
+     * @param DOMDocument $document
+     * @return DOMElement
+     */
+    public static function toXML(Email $email, DOMDocument &$document)
+    {
+        $node = $document->createElement(self::$tagName);
 
-		if (!empty($email->id)) {
-			$node->setAttribute('id', $email->id);
-		}
+        if (!empty($email->id)) {
+            $node->setAttribute('id', $email->id);
+        }
 
-		if (!empty($email->domain)) {
-			$node->setAttribute('domain', $email->domain);
-		}
+        if (!empty($email->domain)) {
+            $node->setAttribute('domain', $email->domain);
+        }
 
-		return $node;
-	}
+        return $node;
+    }
 }

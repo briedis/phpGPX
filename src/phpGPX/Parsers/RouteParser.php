@@ -6,8 +6,11 @@
 
 namespace phpGPX\Parsers;
 
+use DOMDocument;
+use DOMElement;
 use phpGPX\Models\Route;
 use phpGPX\phpGPX;
+use SimpleXMLElement;
 
 /**
  * Class RouteParser
@@ -15,150 +18,150 @@ use phpGPX\phpGPX;
  */
 abstract class RouteParser
 {
-	public static $tagName = 'rte';
+    public static $tagName = 'rte';
 
-	private static $attributeMapper = [
-		'name' => [
-			'name' => 'name',
-			'type' => 'string'
-		],
-		'cmt' => [
-			'name' => 'comment',
-			'type' => 'string'
-		],
-		'desc' => [
-			'name' => 'description',
-			'type' => 'string'
-		],
-		'src' => [
-			'name' => 'source',
-			'type' => 'string'
-		],
-		'links' => [
-			'name' => 'links',
-			'type' => 'array'
-		],
-		'number' => [
-			'name' => 'number',
-			'type' => 'integer'
-		],
-		'type' => [
-			'name' => 'type',
-			'type' => 'string'
-		],
-		'extensions' => [
-			'name' => 'extensions',
-			'type' => 'object'
-		],
-		'rtept' => [
-			'name' => 'points',
-			'type' => 'array'
-		],
-	];
+    private static $attributeMapper = [
+        'name' => [
+            'name' => 'name',
+            'type' => 'string',
+        ],
+        'cmt' => [
+            'name' => 'comment',
+            'type' => 'string',
+        ],
+        'desc' => [
+            'name' => 'description',
+            'type' => 'string',
+        ],
+        'src' => [
+            'name' => 'source',
+            'type' => 'string',
+        ],
+        'links' => [
+            'name' => 'links',
+            'type' => 'array',
+        ],
+        'number' => [
+            'name' => 'number',
+            'type' => 'integer',
+        ],
+        'type' => [
+            'name' => 'type',
+            'type' => 'string',
+        ],
+        'extensions' => [
+            'name' => 'extensions',
+            'type' => 'object',
+        ],
+        'rtept' => [
+            'name' => 'points',
+            'type' => 'array',
+        ],
+    ];
 
-	/**
-	 * @param \SimpleXMLElement[] $nodes
-	 * @return Route[]
-	 */
-	public static function parse($nodes)
-	{
-		$routes = [];
+    /**
+     * @param SimpleXMLElement[] $nodes
+     * @return Route[]
+     */
+    public static function parse($nodes)
+    {
+        $routes = [];
 
-		foreach ($nodes as $node) {
-			$route = new Route();
+        foreach ($nodes as $node) {
+            $route = new Route();
 
-			foreach (self::$attributeMapper as $key => $attribute) {
-				switch ($key) {
-					case 'link':
-						$route->links = isset($node->link) ? LinkParser::parse($node->link) : [];
-						break;
-					case 'extensions':
-						$route->extensions = isset($node->extensions) ? ExtensionParser::parse($node->extensions) : null;
-						break;
-					case 'rtept':
-						$route->points = [];
+            foreach (self::$attributeMapper as $key => $attribute) {
+                switch ($key) {
+                    case 'link':
+                        $route->links = isset($node->link) ? LinkParser::parse($node->link) : [];
+                        break;
+                    case 'extensions':
+                        $route->extensions = isset($node->extensions) ? ExtensionParser::parse($node->extensions) : null;
+                        break;
+                    case 'rtept':
+                        $route->points = [];
 
-						if (isset($node->rtept)) {
-							foreach ($node->rtept as $point) {
-								$route->points[] = PointParser::parse($point);
-							}
-						}
-						break;
-					default:
-						if (!in_array($attribute['type'], ['object', 'array'])) {
-							$route->{$attribute['name']} = isset($node->$key) ? $node->$key : null;
-							if (!is_null($route->{$attribute['name']})) {
-								settype($route->{$attribute['name']}, $attribute['type']);
-							}
-						}
-						break;
-				}
-			}
+                        if (isset($node->rtept)) {
+                            foreach ($node->rtept as $point) {
+                                $route->points[] = PointParser::parse($point);
+                            }
+                        }
+                        break;
+                    default:
+                        if (!in_array($attribute['type'], ['object', 'array'])) {
+                            $route->{$attribute['name']} = isset($node->$key) ? $node->$key : null;
+                            if (!is_null($route->{$attribute['name']})) {
+                                settype($route->{$attribute['name']}, $attribute['type']);
+                            }
+                        }
+                        break;
+                }
+            }
 
-			if (phpGPX::$CALCULATE_STATS) {
-				$route->recalculateStats();
-			}
+            if (phpGPX::$CALCULATE_STATS) {
+                $route->recalculateStats();
+            }
 
-			$routes[] = $route;
-		}
+            $routes[] = $route;
+        }
 
-		return $routes;
-	}
+        return $routes;
+    }
 
-	/**
-	 * @param Route $route
-	 * @param \DOMDocument $document
-	 * @return \DOMElement
-	 */
-	public static function toXML(Route $route, \DOMDocument &$document)
-	{
-		$node = $document->createElement(self::$tagName);
+    /**
+     * @param Route $route
+     * @param DOMDocument $document
+     * @return DOMElement
+     */
+    public static function toXML(Route $route, DOMDocument &$document)
+    {
+        $node = $document->createElement(self::$tagName);
 
-		foreach (self::$attributeMapper as $key => $attribute) {
-			if (!is_null($route->{$attribute['name']})) {
-				switch ($key) {
-					case 'links':
-						$child = LinkParser::toXMLArray($route->links, $document);
-						break;
-					case 'extensions':
-						$child = ExtensionParser::toXML($route->extensions, $document);
-						break;
-					case 'rtept':
-						$child = PointParser::toXMLArray($route->points, $document);
-						break;
-					default:
-						$child = $document->createElement($key);
-						$elementText = $document->createTextNode((string) $route->{$attribute['name']});
-						$child->appendChild($elementText);
-						break;
-				}
+        foreach (self::$attributeMapper as $key => $attribute) {
+            if (!is_null($route->{$attribute['name']})) {
+                switch ($key) {
+                    case 'links':
+                        $child = LinkParser::toXMLArray($route->links, $document);
+                        break;
+                    case 'extensions':
+                        $child = ExtensionParser::toXML($route->extensions, $document);
+                        break;
+                    case 'rtept':
+                        $child = PointParser::toXMLArray($route->points, $document);
+                        break;
+                    default:
+                        $child = $document->createElement($key);
+                        $elementText = $document->createTextNode((string)$route->{$attribute['name']});
+                        $child->appendChild($elementText);
+                        break;
+                }
 
-				if (is_array($child)) {
-					foreach ($child as $item) {
-						$node->appendChild($item);
-					}
-				} else {
-					$node->appendChild($child);
-				}
-			}
-		}
+                if (is_array($child)) {
+                    foreach ($child as $item) {
+                        $node->appendChild($item);
+                    }
+                } else {
+                    $node->appendChild($child);
+                }
+            }
+        }
 
-		return $node;
-	}
+        return $node;
+    }
 
-	/**
-	 * @param array $routes
-	 * @param \DOMDocument $document
-	 * @return \DOMElement[]
-	 */
-	public static function toXMLArray(array $routes, \DOMDocument &$document)
-	{
-		$result = [];
+    /**
+     * @param array $routes
+     * @param DOMDocument $document
+     * @return DOMElement[]
+     */
+    public static function toXMLArray(array $routes, DOMDocument &$document)
+    {
+        $result = [];
 
-		foreach ($routes as $route) {
-			$result[] = self::toXML($route, $document);
-		}
+        foreach ($routes as $route) {
+            $result[] = self::toXML($route, $document);
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 }

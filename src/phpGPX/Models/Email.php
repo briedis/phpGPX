@@ -14,36 +14,36 @@ namespace phpGPX\Models;
 class Email implements Summarizable
 {
 
-	/**
-	 * Id half of email address (jakub.dubec)
-	 * @var string
-	 */
-	public $id;
+    /**
+     * Id half of email address (jakub.dubec)
+     * @var string
+     */
+    public $id;
 
-	/** Domain half of email address (gmail.com)
-	 * @var string
-	 */
-	public $domain;
+    /** Domain half of email address (gmail.com)
+     * @var string
+     */
+    public $domain;
 
-	/**
-	 * Email constructor.
-	 */
-	public function __construct()
-	{
-		$this->id = null;
-		$this->domain = null;
-	}
+    /**
+     * Email constructor.
+     */
+    public function __construct()
+    {
+        $this->id = null;
+        $this->domain = null;
+    }
 
 
-	/**
-	 * Serialize object to array
-	 * @return array
-	 */
-	public function toArray()
-	{
-		return [
-			'id' => (string) $this->id,
-			'domain' => (string) $this->domain
-		];
-	}
+    /**
+     * Serialize object to array
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'id' => (string)$this->id,
+            'domain' => (string)$this->domain,
+        ];
+    }
 }

@@ -6,7 +6,10 @@
 
 namespace phpGPX\Parsers;
 
+use DOMDocument;
+use DOMElement;
 use phpGPX\Models\Copyright;
+use SimpleXMLElement;
 
 /**
  * Class CopyrightParser
@@ -14,48 +17,48 @@ use phpGPX\Models\Copyright;
  */
 abstract class CopyrightParser
 {
-	public static $tagName = 'copyright';
+    public static $tagName = 'copyright';
 
-	/**
-	 * @param \SimpleXMLElement $node
-	 * @return Copyright|null
-	 */
-	public static function parse(\SimpleXMLElement $node)
-	{
-		if ($node->getName() != self::$tagName) {
-			return null;
-		}
+    /**
+     * @param SimpleXMLElement $node
+     * @return Copyright|null
+     */
+    public static function parse(SimpleXMLElement $node)
+    {
+        if ($node->getName() != self::$tagName) {
+            return null;
+        }
 
-		$copyright = new Copyright();
+        $copyright = new Copyright();
 
-		$copyright->author = isset($node['author']) ? (string) $node['author'] : null;
-		$copyright->year = isset($node->year) ? (string) $node->year : null;
-		$copyright->license = isset($node->license) ? (string) $node->license : null;
+        $copyright->author = isset($node['author']) ? (string)$node['author'] : null;
+        $copyright->year = isset($node->year) ? (string)$node->year : null;
+        $copyright->license = isset($node->license) ? (string)$node->license : null;
 
-		return $copyright;
-	}
+        return $copyright;
+    }
 
-	/**
-	 * @param Copyright $copyright
-	 * @param \DOMDocument $document
-	 * @return \DOMElement
-	 */
-	public static function toXML(Copyright $copyright, \DOMDocument &$document)
-	{
-		$node = $document->createElement(self::$tagName);
+    /**
+     * @param Copyright $copyright
+     * @param DOMDocument $document
+     * @return DOMElement
+     */
+    public static function toXML(Copyright $copyright, DOMDocument &$document)
+    {
+        $node = $document->createElement(self::$tagName);
 
-		$node->setAttribute('author', $copyright->author);
+        $node->setAttribute('author', $copyright->author);
 
-		if (!empty($copyright->year)) {
-			$child = $document->createElement('year', $copyright->year);
-			$node->appendChild($child);
-		}
+        if (!empty($copyright->year)) {
+            $child = $document->createElement('year', $copyright->year);
+            $node->appendChild($child);
+        }
 
-		if (!empty($copyright->license)) {
-			$child = $document->createElement('license', $copyright->license);
-			$node->appendChild($child);
-		}
+        if (!empty($copyright->license)) {
+            $child = $document->createElement('license', $copyright->license);
+            $node->appendChild($child);
+        }
 
-		return $node;
-	}
+        return $node;
+    }
 }

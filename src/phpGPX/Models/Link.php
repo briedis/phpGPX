@@ -15,45 +15,45 @@ namespace phpGPX\Models;
 class Link implements Summarizable
 {
 
-	/**
-	 * URL of hyperlink.
-	 * @var string
-	 */
-	public $href;
+    /**
+     * URL of hyperlink.
+     * @var string
+     */
+    public $href;
 
-	/**
-	 * Text of hyperlink.
-	 * @var string|null
-	 */
-	public $text;
+    /**
+     * Text of hyperlink.
+     * @var string|null
+     */
+    public $text;
 
-	/**
-	 * Mime type of content (image/jpeg)
-	 * @var string|null
-	 */
-	public $type;
+    /**
+     * Mime type of content (image/jpeg)
+     * @var string|null
+     */
+    public $type;
 
-	/**
-	 * Link constructor.
-	 */
-	public function __construct()
-	{
-		$this->href = null;
-		$this->text = null;
-		$this->type = null;
-	}
+    /**
+     * Link constructor.
+     */
+    public function __construct()
+    {
+        $this->href = null;
+        $this->text = null;
+        $this->type = null;
+    }
 
 
-	/**
-	 * Serialize object to array
-	 * @return array
-	 */
-	public function toArray()
-	{
-		return [
-			'href' => (string) $this->href,
-			'text' => $this->text,
-			'type' => $this->type
-		];
-	}
+    /**
+     * Serialize object to array
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'href' => (string)$this->href,
+            'text' => $this->text,
+            'type' => $this->type,
+        ];
+    }
 }

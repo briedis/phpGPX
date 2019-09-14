@@ -18,127 +18,127 @@ use phpGPX\Parsers\WaypointParser;
  */
 class phpGPX
 {
-	const JSON_FORMAT = 'json';
-	const XML_FORMAT = 'xml';
+    const JSON_FORMAT = 'json';
+    const XML_FORMAT = 'xml';
 
-	const PACKAGE_NAME = 'phpGPX';
-	const VERSION = '1.0RC5';
+    const PACKAGE_NAME = 'phpGPX';
+    const VERSION = '1.0RC5';
 
-	/**
-	 * Create Stats object for each track, segment and route
-	 * @var bool
-	 */
-	public static $CALCULATE_STATS = true;
+    /**
+     * Create Stats object for each track, segment and route
+     * @var bool
+     */
+    public static $CALCULATE_STATS = true;
 
-	/**
-	 * Additional sort based on timestamp in Routes & Tracks on XML read.
-	 * Disabled by default, data should be already sorted.
-	 * @var bool
-	 */
-	public static $SORT_BY_TIMESTAMP = false;
+    /**
+     * Additional sort based on timestamp in Routes & Tracks on XML read.
+     * Disabled by default, data should be already sorted.
+     * @var bool
+     */
+    public static $SORT_BY_TIMESTAMP = false;
 
-	/**
-	 * Default DateTime output format in JSON serialization.
-	 * @var string
-	 */
-	public static $DATETIME_FORMAT = 'c';
+    /**
+     * Default DateTime output format in JSON serialization.
+     * @var string
+     */
+    public static $DATETIME_FORMAT = 'c';
 
-	/**
-	 * Default timezone for display.
-	 * Data are always stored in UTC timezone.
-	 * @var string
-	 */
-	public static $DATETIME_TIMEZONE_OUTPUT = 'UTC';
+    /**
+     * Default timezone for display.
+     * Data are always stored in UTC timezone.
+     * @var string
+     */
+    public static $DATETIME_TIMEZONE_OUTPUT = 'UTC';
 
-	/**
-	 * Pretty print.
-	 * @var bool
-	 */
-	public static $PRETTY_PRINT = true;
+    /**
+     * Pretty print.
+     * @var bool
+     */
+    public static $PRETTY_PRINT = true;
 
-	/**
-	 * In stats elevation calculation: ignore points with an elevation of 0
-	 * This can happen with some GPS software adding a point with 0 elevation
-	 *
-	 * @var bool
-	 */
-	public static $IGNORE_ELEVATION_0 = true;
+    /**
+     * In stats elevation calculation: ignore points with an elevation of 0
+     * This can happen with some GPS software adding a point with 0 elevation
+     *
+     * @var bool
+     */
+    public static $IGNORE_ELEVATION_0 = true;
 
-	/**
-	 * Apply elevation gain/loss smoothing? If true, the threshold in
-	 * ELEVATION_SMOOTHING_THRESHOLD applies
-	 * @var bool
-	 */
-	public static $APPLY_ELEVATION_SMOOTHING = false;
+    /**
+     * Apply elevation gain/loss smoothing? If true, the threshold in
+     * ELEVATION_SMOOTHING_THRESHOLD applies
+     * @var bool
+     */
+    public static $APPLY_ELEVATION_SMOOTHING = false;
 
-	/**
-	 * if APPLY_ELEVATION_SMOOTHING is true
-	 * the minimum elevation difference between considered points in meters
-	 * @var int
-	 */
-	public static $ELEVATION_SMOOTHING_THRESHOLD = 2;
+    /**
+     * if APPLY_ELEVATION_SMOOTHING is true
+     * the minimum elevation difference between considered points in meters
+     * @var int
+     */
+    public static $ELEVATION_SMOOTHING_THRESHOLD = 2;
 
-	/**
-	 * Apply distance calculation smoothing? If true, the threshold in
-	 * DISTANCE_SMOOTHING_THRESHOLD applies
-	 * @var bool
-	 */
-	public static $APPLY_DISTANCE_SMOOTHING = false;
+    /**
+     * Apply distance calculation smoothing? If true, the threshold in
+     * DISTANCE_SMOOTHING_THRESHOLD applies
+     * @var bool
+     */
+    public static $APPLY_DISTANCE_SMOOTHING = false;
 
-	/**
-	 * if APPLY_DISTANCE_SMOOTHING is true
-	 * the minimum distance between considered points in meters
-	 * @var int
-	 */
-	public static $DISTANCE_SMOOTHING_THRESHOLD = 2;
+    /**
+     * if APPLY_DISTANCE_SMOOTHING is true
+     * the minimum distance between considered points in meters
+     * @var int
+     */
+    public static $DISTANCE_SMOOTHING_THRESHOLD = 2;
 
-	/**
-	 * Load GPX file.
-	 * @param $path
-	 * @return GpxFile
-	 */
-	public static function load($path)
-	{
-		$xml = file_get_contents($path);
+    /**
+     * Load GPX file.
+     * @param $path
+     * @return GpxFile
+     */
+    public static function load($path)
+    {
+        $xml = file_get_contents($path);
 
-		return self::parse($xml);
-	}
+        return self::parse($xml);
+    }
 
-	/**
-	 * Parse GPX data string.
-	 * @param $xml
-	 * @return GpxFile
-	 */
-	public static function parse($xml)
-	{
-		$xml = simplexml_load_string($xml);
+    /**
+     * Parse GPX data string.
+     * @param $xml
+     * @return GpxFile
+     */
+    public static function parse($xml)
+    {
+        $xml = simplexml_load_string($xml);
 
-		$gpx = new GpxFile();
+        $gpx = new GpxFile();
 
-		// Parse creator
-		$gpx->creator = isset($xml['creator']) ? (string)$xml['creator'] : null;
+        // Parse creator
+        $gpx->creator = isset($xml['creator']) ? (string)$xml['creator'] : null;
 
-		// Parse metadata
-		$gpx->metadata = isset($xml->metadata) ? MetadataParser::parse($xml->metadata) : null;
+        // Parse metadata
+        $gpx->metadata = isset($xml->metadata) ? MetadataParser::parse($xml->metadata) : null;
 
-		// Parse waypoints
-		$gpx->waypoints = isset($xml->wpt) ? WaypointParser::parse($xml->wpt) : [];
+        // Parse waypoints
+        $gpx->waypoints = isset($xml->wpt) ? WaypointParser::parse($xml->wpt) : [];
 
-		// Parse tracks
-		$gpx->tracks = isset($xml->trk) ? TrackParser::parse($xml->trk) : [];
+        // Parse tracks
+        $gpx->tracks = isset($xml->trk) ? TrackParser::parse($xml->trk) : [];
 
-		// Parse routes
-		$gpx->routes = isset($xml->rte) ? RouteParser::parse($xml->rte) : [];
+        // Parse routes
+        $gpx->routes = isset($xml->rte) ? RouteParser::parse($xml->rte) : [];
 
-		return $gpx;
-	}
+        return $gpx;
+    }
 
-	/**
-	 * Create library signature from name and version.
-	 * @return string
-	 */
-	public static function getSignature()
-	{
-		return sprintf("%s/%s", self::PACKAGE_NAME, self::VERSION);
-	}
+    /**
+     * Create library signature from name and version.
+     * @return string
+     */
+    public static function getSignature()
+    {
+        return sprintf("%s/%s", self::PACKAGE_NAME, self::VERSION);
+    }
 }

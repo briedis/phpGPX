@@ -9,15 +9,15 @@ namespace phpGPX\Models;
 interface StatsCalculator
 {
 
-	/**
-	 * Recalculate stats objects.
-	 * @return void
-	 */
-	public function recalculateStats();
+    /**
+     * Recalculate stats objects.
+     * @return void
+     */
+    public function recalculateStats();
 
-	/**
-	 * Return all points in collection.
-	 * @return Point[]
-	 */
-	public function getPoints();
+    /**
+     * Return all points in collection.
+     * @return Point[]
+     */
+    public function getPoints();
 }

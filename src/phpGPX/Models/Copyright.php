@@ -17,45 +17,45 @@ use phpGPX\Helpers\SerializationHelper;
 class Copyright implements Summarizable
 {
 
-	/**
-	 * Copyright holder (TopoSoft, Inc.)
-	 * @var string
-	 */
-	public $author;
+    /**
+     * Copyright holder (TopoSoft, Inc.)
+     * @var string
+     */
+    public $author;
 
-	/**
-	 * Year of copyright.
-	 * @var string
-	 */
-	public $year;
+    /**
+     * Year of copyright.
+     * @var string
+     */
+    public $year;
 
-	/**
-	 * Link to external file containing license text.
-	 * @var string
-	 */
-	public $license;
+    /**
+     * Link to external file containing license text.
+     * @var string
+     */
+    public $license;
 
-	/**
-	 * Copyright constructor.
-	 */
-	public function __construct()
-	{
-		$this->author = null;
-		$this->year = null;
-		$this->license = null;
-	}
+    /**
+     * Copyright constructor.
+     */
+    public function __construct()
+    {
+        $this->author = null;
+        $this->year = null;
+        $this->license = null;
+    }
 
 
-	/**
-	 * Serialize object to array
-	 * @return array
-	 */
-	public function toArray()
-	{
-		return [
-			'author' => $this->author,
-			'year' => SerializationHelper::stringOrNull($this->year),
-			'license' => SerializationHelper::stringOrNull($this->license)
-		];
-	}
+    /**
+     * Serialize object to array
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'author' => $this->author,
+            'year' => SerializationHelper::stringOrNull($this->year),
+            'license' => SerializationHelper::stringOrNull($this->license),
+        ];
+    }
 }

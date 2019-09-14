@@ -6,6 +6,8 @@
 
 namespace phpGPX\Parsers;
 
+use SimpleXMLElement;
+
 /**
  * Class WaypointParser
  * @package phpGPX\Parsers
@@ -13,23 +15,23 @@ namespace phpGPX\Parsers;
 abstract class WaypointParser
 {
 
-	/**
-	 * @param \SimpleXMLElement $nodes - a non empty list of wpt elements
-	 * @return array
-	 */
-	public static function parse(\SimpleXMLElement $nodes)
-	{
-		$points = [];
+    /**
+     * @param SimpleXMLElement $nodes - a non empty list of wpt elements
+     * @return array
+     */
+    public static function parse(SimpleXMLElement $nodes)
+    {
+        $points = [];
 
-		// foreach ($nodes->wpt as $item) this was incorrect, the ->wpt was already done in the caller
-		foreach ($nodes as $item) {
-			$point = PointParser::parse($item);
+        // foreach ($nodes->wpt as $item) this was incorrect, the ->wpt was already done in the caller
+        foreach ($nodes as $item) {
+            $point = PointParser::parse($item);
 
-			if ($point) {
-				$points[] = $point;
-			}
-		}
+            if ($point) {
+                $points[] = $point;
+            }
+        }
 
-		return $points;
-	}
+        return $points;
+    }
 }
