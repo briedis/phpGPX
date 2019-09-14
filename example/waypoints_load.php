@@ -8,8 +8,8 @@ use phpGPX\phpGPX;
 
 require_once '../vendor/autoload.php';
 
-$origFile = dirname(__FILE__).'/waypoint_test.gpx';
-$outFile = dirname(__FILE__).'/output_waypoint_test.gpx';
+$origFile = dirname(__FILE__) . '/waypoint_test.gpx';
+$outFile = dirname(__FILE__) . '/output_waypoint_test.gpx';
 // $outFile2 = dirname(__FILE__).'/output_waypoint_test2.gpx';
 
 $gpx = new phpGPX();
@@ -23,7 +23,7 @@ system("diff $origFile $outFile", $retcode);
 // system("diff $origFile $outFile2", $retcode);
 
 if ($retcode != 0) {
-	throw new \Exception("wapoint file incorrect");
+    throw new Exception("wapoint file incorrect");
 } else {
-	print "wapoint test successfull\n";
+    print "wapoint test successfull\n";
 }

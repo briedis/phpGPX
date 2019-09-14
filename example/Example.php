@@ -15,5 +15,5 @@ phpGPX::$PRETTY_PRINT = true;
 $file->save('output_Evening_Ride.gpx', phpGPX::XML_FORMAT);
 
 foreach ($file->tracks as $track) {
-	var_dump($track->stats->toArray());
+    var_dump($track->stats->toArray());
 }

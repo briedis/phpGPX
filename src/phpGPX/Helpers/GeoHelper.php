@@ -32,8 +32,10 @@ abstract class GeoHelper
         $lonTo = deg2rad($point2->longitude);
 
         $lonDelta = $lonTo - $lonFrom;
-        $a = pow(cos($latTo) * sin($lonDelta),
-                2) + pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
+        $a = pow(
+            cos($latTo) * sin($lonDelta),
+            2
+        ) + pow(cos($latFrom) * sin($latTo) - sin($latFrom) * cos($latTo) * cos($lonDelta), 2);
         $b = sin($latFrom) * sin($latTo) + cos($latFrom) * cos($latTo) * cos($lonDelta);
         $angle = atan2(sqrt($a), $b);
 
